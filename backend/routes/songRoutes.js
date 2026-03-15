@@ -2,6 +2,7 @@ import express from 'express';
 import { createSong, getSongs, getSongById } from '../controllers/songController.js';
 import { uploadAudio, uploadImage } from '../middleware/uploadMiddleware.js';
 import { protect } from '../middleware/authMiddleware.js'; // To ensure only logged-in users upload
+import { autoAddSong } from '../controllers/songController.js';
 
 const router = express.Router();
 
@@ -21,6 +22,8 @@ router.post('/upload/image', protect, uploadImage.single('image'), (req, res) =>
     if (!req.file) return res.status(400).json({ message: 'No image file uploaded' });
     res.status(200).json({ imageUrl: req.file.path });
 });
+
+router.post('/auto-add', autoAddSong);
 
 
 // --- DATABASE ENDPOINTS ---

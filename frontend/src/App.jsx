@@ -1,33 +1,55 @@
-import PlayControls from "./components/music.control";
-import TopBar from "./components/Topbar";
-import MusicPage from "./components/MusicPage";
-import Sidebar from "./components/sidebar";
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from './context/AuthContext';
 
-import "@fortawesome/fontawesome-free/css/all.min.css";
+// Import Layout
+import Layout from './components/layout/Layout';
+
+// Import Pages
+import Home from './pages/Home';
+import Search from './pages/Search';
+import Library from './pages/Library';
+import Playlist from './pages/Playlist';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import AddSong from './pages/AddSong';
+
+// A simple wrapper component that checks for a logged-in user
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useContext(AuthContext);
+  
+  if (loading) return null; // Wait for local storage check to finish
+  if (!user) return <Navigate to="/login" replace />; // Bounce to login if not authenticated
+  
+  return children;
+};
 
 function App() {
   return (
-    <div className="w-full h-screen bg-black text-white flex flex-col">
-
-      {/* Top Navigation Bar */}
-      <TopBar />
-
-      {/* Main content area */}
-      <div className="flex flex-1 overflow-hidden">
-
-        {/* Left Sidebar */}
-        <Sidebar />
-
-        {/* Right Scrollable Content */}
-        <div className="flex-1 overflow-y-auto">
-          <MusicPage />
-        </div>
-
-      </div>
-
-      {/* Bottom Player Controls */}
-      <PlayControls />
-    </div>
+    <Router>
+      <Routes>
+        {/* --- PROTECTED ROUTES (Have Sidebar and Player) --- */}
+        <Route 
+          path="/" 
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
+          {/* These pages render inside the <Outlet /> of your Layout.jsx */}
+          <Route index element={<Home />} />
+          <Route path="search" element={<Search />} />
+          <Route path="library" element={<Library />} />
+          <Route path="playlist/:id" element={<Playlist />} />
+          <Route path="add-song" element={<AddSong />} />
+        </Route>
+        
+        {/* --- PUBLIC ROUTES (No Sidebar, No Player) --- */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </Router>
   );
 }
 

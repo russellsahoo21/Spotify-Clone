@@ -7,6 +7,7 @@ import userRoutes from './routes/userRoutes.js';
 import songRoutes from './routes/songRoutes.js';
 import playlistRoutes from './routes/playlistRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+import searchRoutes from './routes/searchRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -31,6 +32,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/songs', songRoutes);
 app.use('/api/playlists', playlistRoutes);
+app.use('/api/search', searchRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
