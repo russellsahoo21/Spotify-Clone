@@ -3,7 +3,7 @@ import { FiHome, FiSearch, FiBook, FiPlusSquare } from 'react-icons/fi';
 
 const Sidebar = () => {
   return (
-    <div className="w-64 bg-black h-full flex flex-col text-spotify-grey p-6 gap-6 shrink-0 z-10">
+    <div className="hidden md:flex w-64 bg-black h-full flex-col text-spotify-grey p-6 gap-6 shrink-0 z-10">
       {/* Logo */}
       <div className="text-white font-bold text-2xl mb-4 tracking-tighter">
         Spotify<span className="text-spotify-green">Clone</span>

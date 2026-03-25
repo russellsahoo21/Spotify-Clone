@@ -1,38 +1,34 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
-import MusicPlayer from '../player/MusicPlayer'; // <-- Using your exact import!
+import MusicPlayer from '../player/MusicPlayer';
+import MobileNav from './MobileNav'; 
 
 const Layout = () => {
   return (
-    // 1. The outermost container: Full screen, prevents full-page scrolling, stacks vertically
-    <div className="h-screen w-full bg-black flex flex-col overflow-hidden font-sans text-white">
+    // 1. CRITICAL FIX: Changed h-screen to h-[100dvh]
+    // This tells the browser to dynamically adjust to the *actual* visible screen space
+    <div className="h-[100dvh] w-full bg-black flex flex-col overflow-hidden font-sans text-white">
       
-      {/* 2. Top Section: Flex container that takes up all space above the player */}
+      {/* TOP SECTION: Sidebar + Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        
-        {/* Left Navigation Sidebar */}
         <Sidebar />
         
-        {/* Right Main Content Area: Scrollable (overflow-y-auto) */}
         <div className="flex-1 flex flex-col bg-spotify-dark overflow-y-auto relative bg-gradient-to-b from-white/10 to-spotify-dark">
-          
-          {/* Top Navbar */}
           <Navbar />
-          
-          {/* The specific pages (Home, Search, etc.) will inject themselves here */}
-          <main className="p-8 flex-1">
+          <main className="p-4 md:p-8 flex-1">
             <Outlet />
           </main>
-          
         </div>
       </div>
 
-      {/* 3. Bottom Section: Fixed Music Player */}
-      {/* shrink-0 ensures this container never gets crushed by the top section */}
-      <div className="shrink-0 z-50">
+      {/* 2. SWAPPED ORDER: Music Player is now ABOVE the Mobile Nav */}
+      <div className="shrink-0 z-50 h-16 md:h-24 bg-black border-t border-white/10">
         <MusicPlayer />
       </div>
+
+      {/* 3. SWAPPED ORDER: Mobile Nav is now at the absolute bottom */}
+      <MobileNav />
       
     </div>
   );
