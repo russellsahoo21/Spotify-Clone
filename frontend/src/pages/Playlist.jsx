@@ -26,8 +26,8 @@ const Playlist = () => {
   return (
     <div className="-m-8"> {/* Negative margin to bleed into the Layout padding */}
       {/* 1. Playlist Header (Big Gradient Area) */}
-      <div className="bg-gradient-to-b from-blue-900 to-spotify-dark/30 p-8 flex items-end gap-6 h-64">
-        <div className="w-48 h-48 shadow-2xl bg-spotify-dark flex-shrink-0 flex items-center justify-center">
+      <div className="bg-linear-to-b from-blue-900 to-spotify-dark/30 p-8 flex items-end gap-6 h-64">
+        <div className="w-48 h-48 shadow-2xl bg-spotify-dark shrink-0 flex items-center justify-center">
           {playlist.coverImage ? (
             <img src={playlist.coverImage} alt={playlist.name} className="w-full h-full object-cover" />
           ) : (

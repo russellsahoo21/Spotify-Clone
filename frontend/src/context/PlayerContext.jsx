@@ -66,7 +66,7 @@ export const PlayerProvider = ({ children }) => {
           showVideo 
             ? isExpanded
               // 1. EXPANDED MOBILE MODE: Massive square, perfectly positioned over the cover art
-              ? "fixed top-32 left-6 right-6 aspect-square bg-black z-[110] rounded-xl pointer-events-none shadow-2xl transition-all md:bottom-24 md:top-auto md:w-80 md:left-0 md:aspect-video"
+              ? "fixed top-32 left-6 right-6 aspect-square bg-black z-[110] rounded-xl pointer-events-none shadow-2xl transition-all md:bottom-24 md:top-auto md:w-64 md:left-0 md:aspect-video"
               // 2. MINI MODE: Bottom left corner
               : "fixed bottom-20 md:bottom-24 left-0 w-full md:w-64 aspect-video bg-black z-[110] border-t border-white/10 pointer-events-none shadow-2xl transition-all"
             : "hidden"
