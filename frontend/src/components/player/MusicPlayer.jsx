@@ -8,20 +8,48 @@ import { FiMonitor, FiVolume2, FiVolumeX, FiChevronDown, FiShuffle, FiRepeat } f
 import { MdThumbUpOffAlt, MdThumbDownOffAlt, MdPlaylistAdd, MdShare } from 'react-icons/md';
 
 const MusicPlayer = () => {
-  const { 
-    currentSong, isPlaying, togglePlay, volume, changeVolume, 
-    showVideo, setShowVideo, isExpanded, setIsExpanded 
+  const {
+    currentSong, isPlaying, togglePlay, volume, changeVolume,
+    showVideo, setShowVideo, isExpanded, setIsExpanded
   } = useContext(PlayerContext);
 
-  if (!currentSong) return null;
+  // Hide the player entirely on mobile if no song is picked
+  // On desktop, we'll gracefully show the skeleton bar!
+  if (!currentSong) {
+    return (
+      <div className="h-full px-4 items-center justify-between hidden md:flex opacity-80">
+        <div className="flex items-center gap-4 w-1/3">
+          <div className="w-14 h-14 bg-white/20 rounded-md" />
+          <div className="flex flex-col gap-2">
+            <div className="w-24 h-3 bg-white/20 rounded-full" />
+            <div className="w-16 h-2 bg-white/20 rounded-full" />
+          </div>
+        </div>
+        <div className="flex flex-col items-center justify-center w-1/3 max-w-md">
+          <div className="flex items-center gap-6 text-white/40">
+            <FaStepBackward size={16} />
+            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+              <FaPlay size={12} className="pl-1" />
+            </div>
+            <FaStepForward size={16} />
+          </div>
+          <div className="w-full mt-3 h-1 bg-white/10 rounded-full animate-pulse" />
+        </div>
+        <div className="flex items-center gap-4 w-1/3 justify-end pr-4 text-white/40">
+          <FiMonitor size={20} />
+          <FiVolume2 size={20} />
+          <div className="w-24 h-1 bg-white/10 rounded-full" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
       {/* 🌟 FULL SCREEN MOBILE OVERLAY (YouTube Music Style) 🌟 */}
       {isExpanded && (
-        // CHANGED: bg-spotify-black to bg-black for that deep OLED dark mode look!
         <div className="fixed inset-0 bg-black z-[100] flex flex-col p-6 pt-12 md:hidden">
-          
+
           {/* Top Header: Close Button & Song/Video Toggle */}
           <div className="flex justify-between items-center mb-8 h-10">
             <button onClick={() => setIsExpanded(false)} className="p-2 -ml-2">
@@ -30,20 +58,20 @@ const MusicPlayer = () => {
 
             {/* The Iconic Pill Toggle */}
             <div className="flex bg-white/10 rounded-full p-1">
-              <button 
-                onClick={() => setShowVideo(false)} 
+              <button
+                onClick={() => setShowVideo(false)}
                 className={`px-6 py-1.5 rounded-full text-xs font-bold transition ${!showVideo ? 'bg-white/20 text-white shadow-md' : 'text-spotify-grey'}`}
               >
                 Song
               </button>
-              <button 
-                onClick={() => setShowVideo(true)} 
+              <button
+                onClick={() => setShowVideo(true)}
                 className={`px-6 py-1.5 rounded-full text-xs font-bold transition ${showVideo ? 'bg-white/20 text-white shadow-md' : 'text-spotify-grey'}`}
               >
                 Video
               </button>
             </div>
-            
+
             <div className="w-10" /> {/* Invisible spacer for flexbox centering */}
           </div>
 
@@ -62,7 +90,7 @@ const MusicPlayer = () => {
 
           {/* Bottom Area: Song Info, Action Buttons, and Controls */}
           <div className="flex flex-col flex-1 justify-end pb-8">
-            
+
             {/* Title & Artist */}
             <div className="mb-4">
               <h2 className="text-2xl font-extrabold text-white truncate mb-1">{currentSong.title}</h2>
@@ -93,11 +121,11 @@ const MusicPlayer = () => {
             {/* Primary Playback Controls */}
             <div className="flex items-center justify-between px-2">
               <FiShuffle size={22} className="text-spotify-grey hover:text-white transition cursor-pointer" />
-              
+
               <div className="flex items-center gap-6">
                 <FaStepBackward size={28} className="text-white hover:opacity-75 transition cursor-pointer" />
-                <button 
-                  onClick={togglePlay} 
+                <button
+                  onClick={togglePlay}
                   className="w-16 h-16 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 transition shadow-lg"
                 >
                   {isPlaying ? <FaPause size={24} /> : <FaPlay size={24} className="pl-1" />}
@@ -114,9 +142,9 @@ const MusicPlayer = () => {
 
       {/* 🌟 STANDARD MINI PLAYER (Bottom of screen) 🌟 */}
       <div className="h-full px-2 md:px-4 flex items-center justify-between relative z-50">
-        
+
         {/* Left: Mini Cover Art (Click to expand!) */}
-        <div 
+        <div
           onClick={() => {
             if (window.innerWidth < 768) {
               setIsExpanded(true);
@@ -124,10 +152,10 @@ const MusicPlayer = () => {
           }}
           className="flex items-center gap-2 md:gap-4 w-1/2 md:w-1/3 pr-2 overflow-hidden cursor-pointer hover:bg-white/5 rounded transition p-1"
         >
-          <img 
-            src={currentSong.coverImage} 
-            alt="Cover" 
-            className={`w-10 h-10 md:w-14 md:h-14 object-cover rounded-md shadow-md shrink-0 transition-opacity ${showVideo ? 'max-md:opacity-0' : 'opacity-100'}`} 
+          <img
+            src={currentSong.coverImage}
+            alt="Cover"
+            className={`w-10 h-10 md:w-14 md:h-14 object-cover rounded-md shadow-md shrink-0 transition-opacity ${showVideo ? 'max-md:opacity-0' : 'opacity-100'}`}
           />
           <div className="overflow-hidden">
             <h4 className="text-white text-xs md:text-sm font-bold truncate">{currentSong.title}</h4>
@@ -139,14 +167,14 @@ const MusicPlayer = () => {
         <div className="flex flex-col items-end md:items-center justify-center w-1/2 md:w-1/3 max-w-md pr-2 md:pr-0">
           <div className="flex items-center gap-4 md:gap-6 text-spotify-grey">
             <FaStepBackward size={16} className="hover:text-white transition cursor-pointer hidden md:block" />
-            
-            <button 
+
+            <button
               onClick={(e) => { e.stopPropagation(); togglePlay(); }}
               className="bg-white text-black w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center hover:scale-105 transition shrink-0"
             >
               {isPlaying ? <FaPause size={12} className="md:w-4 md:h-4" /> : <FaPlay size={12} className="pl-1 md:w-4 md:h-4" />}
             </button>
-            
+
             <FaStepForward size={16} className="hover:text-white transition cursor-pointer hidden md:block" />
           </div>
           <div className="hidden md:block w-full mt-2"><ProgressBar /></div>

@@ -80,7 +80,7 @@ export const PlayerProvider = ({ children }) => {
       {/* THE UPGRADED VIDEO ENGINE */}
       {currentSong && (
         <div className={
-          showVideo
+          showVideo 
             ? isExpanded
               // 1. MOBILE EXPANDED: Better alignment and size constraint
               ? "fixed top-[120px] left-6 right-6 aspect-square max-h-[60vh] bg-black z-[110] overflow-hidden shadow-2xl pointer-events-none rounded-xl"
