@@ -1,153 +1,106 @@
 import { useContext } from 'react';
 import { PlayerContext } from '../../context/PlayerContext';
 import ProgressBar from './ProgressBar';
-
-// --- ALL OUR ICONS FROM REACT-ICONS ---
 import { FaPlay, FaPause, FaStepBackward, FaStepForward } from 'react-icons/fa';
 import { FiMonitor, FiVolume2, FiVolumeX, FiChevronDown, FiShuffle, FiRepeat } from 'react-icons/fi';
 import { MdThumbUpOffAlt, MdThumbDownOffAlt, MdPlaylistAdd, MdShare } from 'react-icons/md';
 
 const MusicPlayer = () => {
   const { 
-    currentSong, isPlaying, togglePlay, volume, changeVolume, 
-    showVideo, setShowVideo, isExpanded, setIsExpanded 
+    currentSong, isPlaying, togglePlay, 
+    isExpanded, setIsExpanded, 
+    showVideo, setShowVideo, 
+    volume, changeVolume
   } = useContext(PlayerContext);
 
   if (!currentSong) return null;
 
   return (
     <>
-      {/* 🌟 FULL SCREEN MOBILE OVERLAY (YouTube Music Style) 🌟 */}
+      {/* 🌟 EXPANDED OVERLAY: Only blocks screen if isExpanded is TRUE 🌟 */}
       {isExpanded && (
-        // CHANGED: bg-spotify-black to bg-black for that deep OLED dark mode look!
-        <div className="fixed inset-0 bg-black z-[100] flex flex-col p-6 pt-12 md:hidden">
-          
-          {/* Top Header: Close Button & Song/Video Toggle */}
-          <div className="flex justify-between items-center mb-8 h-10">
-            <button onClick={() => setIsExpanded(false)} className="p-2 -ml-2">
-              <FiChevronDown size={32} className="text-white hover:opacity-75 transition" />
+        <div className="fixed inset-0 bg-black z-[100] flex flex-col p-6 pt-12 md:hidden animate-in slide-in-from-bottom duration-300">
+          <div className="flex justify-between items-center mb-8">
+            <button onClick={() => setIsExpanded(false)} className="p-2">
+              <FiChevronDown size={32} className="text-white" />
             </button>
-
-            {/* The Iconic Pill Toggle */}
             <div className="flex bg-white/10 rounded-full p-1">
-              <button 
-                onClick={() => setShowVideo(false)} 
-                className={`px-6 py-1.5 rounded-full text-xs font-bold transition ${!showVideo ? 'bg-white/20 text-white shadow-md' : 'text-spotify-grey'}`}
-              >
-                Song
-              </button>
-              <button 
-                onClick={() => setShowVideo(true)} 
-                className={`px-6 py-1.5 rounded-full text-xs font-bold transition ${showVideo ? 'bg-white/20 text-white shadow-md' : 'text-spotify-grey'}`}
-              >
-                Video
-              </button>
+              <button onClick={() => setShowVideo(false)} className={`px-6 py-1.5 rounded-full text-xs font-bold ${!showVideo ? 'bg-white/20 text-white' : 'text-zinc-500'}`}>Song</button>
+              <button onClick={() => setShowVideo(true)} className={`px-6 py-1.5 rounded-full text-xs font-bold ${showVideo ? 'bg-white/20 text-white' : 'text-zinc-500'}`}>Video</button>
             </div>
-            
-            <div className="w-10" /> {/* Invisible spacer for flexbox centering */}
+            <div className="w-10" />
           </div>
 
-          {/* Center: The Massive Cover Art Space */}
-          {/* (If showVideo is true, the global YouTube iframe magically floats perfectly over this box!) */}
-          <div className="w-full aspect-square bg-spotify-dark rounded-xl shadow-2xl overflow-hidden mb-6 shrink-0 flex items-center justify-center">
-            {!showVideo && <img src={currentSong.coverImage} alt="Cover Art" className="w-full h-full object-cover" />}
+          {/* This box is the target for the YouTube Frame when Expanded */}
+          <div className="w-full aspect-square bg-zinc-900 rounded-xl overflow-hidden mb-6 shadow-2xl">
+            {!showVideo && <img src={currentSong.coverImage} className="w-full h-full object-cover" />}
           </div>
 
-          {/* Bottom Area: Song Info, Action Buttons, and Controls */}
-          <div className="flex flex-col flex-1 justify-end pb-8">
-            
-            {/* Title & Artist */}
-            <div className="mb-4">
-              <h2 className="text-2xl font-extrabold text-white truncate mb-1">{currentSong.title}</h2>
-              <p className="text-spotify-grey text-base truncate">{currentSong.artist}</p>
-            </div>
-
-            {/* Secondary Action Buttons (Like, Dislike, Save, Share) */}
-            <div className="flex items-center justify-between mb-6 text-white/80">
-              <button className="flex items-center gap-2 hover:text-white bg-white/10 px-4 py-2 rounded-full text-xs font-semibold transition">
-                <MdThumbUpOffAlt size={18} /> Like
-              </button>
-              <button className="hover:text-white bg-white/10 p-2 rounded-full transition">
-                <MdThumbDownOffAlt size={18} />
-              </button>
-              <button className="flex items-center gap-2 hover:text-white bg-white/10 px-4 py-2 rounded-full text-xs font-semibold transition">
-                <MdPlaylistAdd size={18} /> Save
-              </button>
-              <button className="hover:text-white bg-white/10 p-2 rounded-full transition">
-                <MdShare size={18} />
-              </button>
-            </div>
-
-            {/* Progress Bar */}
-            <div className="mb-6">
-              <ProgressBar />
-            </div>
-
-            {/* Primary Playback Controls */}
-            <div className="flex items-center justify-between px-2">
-              <FiShuffle size={22} className="text-spotify-grey hover:text-white transition cursor-pointer" />
-              
-              <div className="flex items-center gap-6">
-                <FaStepBackward size={28} className="text-white hover:opacity-75 transition cursor-pointer" />
-                <button 
-                  onClick={togglePlay} 
-                  className="w-16 h-16 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 transition shadow-lg"
-                >
+          <div className="flex flex-col flex-1 justify-end pb-12">
+            <h2 className="text-2xl font-bold text-white truncate mb-1">{currentSong.title}</h2>
+            <p className="text-zinc-400 text-lg mb-8">{currentSong.artist}</p>
+            <ProgressBar />
+            <div className="flex justify-between items-center mt-8">
+              <FiShuffle size={22} className="text-zinc-500" />
+              <div className="flex items-center gap-8">
+                <FaStepBackward size={28} />
+                <button onClick={togglePlay} className="w-16 h-16 bg-white text-black rounded-full flex items-center justify-center">
                   {isPlaying ? <FaPause size={24} /> : <FaPlay size={24} className="pl-1" />}
                 </button>
-                <FaStepForward size={28} className="text-white hover:opacity-75 transition cursor-pointer" />
+                <FaStepForward size={28} />
               </div>
-
-              <FiRepeat size={22} className="text-spotify-grey hover:text-white transition cursor-pointer" />
+              <FiRepeat size={22} className="text-zinc-500" />
             </div>
-
           </div>
         </div>
       )}
 
-      {/* 🌟 STANDARD MINI PLAYER (Bottom of screen) 🌟 */}
-      <div className="h-full px-2 md:px-4 flex items-center justify-between relative z-50">
-        
-        {/* Left: Mini Cover Art (Click to expand!) */}
-        <div 
-          onClick={() => setIsExpanded(true)}
-          className="flex items-center gap-2 md:gap-4 w-1/2 md:w-1/3 pr-2 overflow-hidden cursor-pointer hover:bg-white/5 rounded transition p-1"
-        >
-          <img src={currentSong.coverImage} alt="Cover" className="w-10 h-10 md:w-14 md:h-14 object-cover rounded-md shadow-md shrink-0" />
-          <div className="overflow-hidden">
-            <h4 className="text-white text-xs md:text-sm font-bold truncate">{currentSong.title}</h4>
-            <p className="text-spotify-grey text-[10px] md:text-xs truncate mt-1">{currentSong.artist}</p>
-          </div>
-        </div>
+      {/* 🌟 MINI PLAYER: The bottom bar 🌟 */}
+      <div className="h-full flex items-center justify-between px-4 relative z-[60]">
+        {/* Inside MusicPlayer.jsx - Mini Player Left Section */}
+<div 
+  onClick={() => { if(window.innerWidth < 768) setIsExpanded(true) }} 
+  className="flex items-center gap-3 w-2/3 md:w-1/3 cursor-pointer group"
+>
+  <div className="w-12 h-12 md:w-14 md:h-14 bg-black rounded shadow-lg overflow-hidden flex-shrink-0 border border-white/5 relative">
+    {/* Desktop: Always show cover image */}
+    <img 
+      src={currentSong.coverImage} 
+      className="w-full h-full object-cover" 
+    />
+  </div>
 
-        {/* Center: Playback Controls */}
-        <div className="flex flex-col items-end md:items-center justify-center w-1/2 md:w-1/3 max-w-md pr-2 md:pr-0">
-          <div className="flex items-center gap-4 md:gap-6 text-spotify-grey">
-            <FaStepBackward size={16} className="hover:text-white transition cursor-pointer hidden md:block" />
-            
-            <button 
-              onClick={(e) => { e.stopPropagation(); togglePlay(); }}
-              className="bg-white text-black w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center hover:scale-105 transition shrink-0"
-            >
-              {isPlaying ? <FaPause size={12} className="md:w-4 md:h-4" /> : <FaPlay size={12} className="pl-1 md:w-4 md:h-4" />}
+  <div className="truncate">
+    <h4 className="text-white text-sm font-bold truncate">{currentSong.title}</h4>
+    <p className="text-[10px] md:text-xs text-zinc-400 truncate">{currentSong.artist}</p>
+  </div>
+</div>
+
+        {/* Center: Desktop Controls */}
+        <div className="hidden md:flex flex-col items-center justify-center w-1/3">
+          <div className="flex items-center gap-6 text-zinc-400 mb-1">
+            <FaStepBackward size={16} className="hover:text-white transition" />
+            <button onClick={(e) => { e.stopPropagation(); togglePlay(); }} className="bg-white text-black p-2.5 rounded-full hover:scale-105 transition shadow-md">
+              {isPlaying ? <FaPause size={14} /> : <FaPlay size={14} className="pl-0.5" />}
             </button>
-            
-            <FaStepForward size={16} className="hover:text-white transition cursor-pointer hidden md:block" />
+            <FaStepForward size={16} className="hover:text-white transition" />
           </div>
-          <div className="hidden md:block w-full mt-2"><ProgressBar /></div>
+          <div className="w-full max-w-md"><ProgressBar /></div>
         </div>
 
-        {/* Right: Desktop Controls (Volume, Video Toggle) */}
-        <div className="hidden md:flex items-center gap-4 w-1/3 justify-end pr-4">
-          <button onClick={() => setShowVideo(!showVideo)} className={`transition ${showVideo ? 'text-spotify-green' : 'text-spotify-grey hover:text-white'}`} title="Toggle Video">
-            <FiMonitor size={20} />
+        {/* Right: Actions */}
+        <div className="flex items-center gap-4 justify-end w-1/3">
+          <button onClick={(e) => { e.stopPropagation(); togglePlay(); }} className="md:hidden text-white p-2">
+             {isPlaying ? <FaPause size={20} /> : <FaPlay size={20} />}
           </button>
-          <button onClick={() => changeVolume(volume === 0 ? 100 : 0)} className="text-spotify-grey hover:text-white transition">
-            {volume === 0 ? <FiVolumeX size={20} /> : <FiVolume2 size={20} />}
-          </button>
-          <input type="range" min="0" max="100" value={volume} onChange={(e) => changeVolume(Number(e.target.value))} style={{ background: `linear-gradient(to right, white ${volume}%, #404040 ${volume}%)` }} className="w-24 h-1 appearance-none cursor-pointer rounded-full transition-all outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full" />
+          <div className="hidden md:flex items-center gap-4">
+             <FiMonitor size={18} className={`cursor-pointer transition ${showVideo ? 'text-green-500' : 'text-zinc-400 hover:text-white'}`} onClick={(e) => { e.stopPropagation(); setShowVideo(!showVideo); }} />
+             <div className="flex items-center gap-2">
+               <FiVolume2 size={18} className="text-zinc-400" />
+               <input type="range" className="w-20 h-1 accent-white" />
+             </div>
+          </div>
         </div>
-
       </div>
     </>
   );

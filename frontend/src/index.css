@@ -1,16 +1,27 @@
 @import "tailwindcss";
 
-/* Hide scrollbar but keep scrolling */
+/* 1. Force the layout to fit the screen exactly */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent the body from scrolling */
+  background-color: #121212;
+  color: white;
+}
+
+/* 2. Fix touch behavior for mobile */
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hide scrollbar but keep scrolling functionality for specific containers */
 .hide-scrollbar {
-  -ms-overflow-style: none;      /* IE & Edge */
-  scrollbar-width: none;         /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-  display: none;                 /* Chrome, Safari */
-}
-
-body {
-  background-color: #121212; /* This forces the whole page to be dark */
-  color: white;
+  display: none;
 }
