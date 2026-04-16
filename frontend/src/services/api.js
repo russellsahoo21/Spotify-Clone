@@ -2,8 +2,8 @@ import axios from 'axios';
 
 // Create a custom axios instance
 const api = axios.create({
-    // baseURL: 'https://spotify-clone-backend-w1u7.onrender.com/api', 
-    baseURL: 'http://localhost:5000/api',
+    baseURL: 'https://spotify-clone-backend-w1u7.onrender.com/api', 
+    // baseURL: 'http://localhost:5000/api',
 });
 
 // Add a request interceptor to attach the auth token
