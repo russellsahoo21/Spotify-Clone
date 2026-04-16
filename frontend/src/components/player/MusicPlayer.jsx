@@ -29,165 +29,156 @@ const MusicPlayer = () => {
   return (
     <>
       {/* 🌟 FULL SCREEN MOBILE OVERLAY 🌟 */}
-      {isExpanded && (
-        <div className="fixed inset-0 bg-black z-[100] flex flex-col p-6 pt-12 md:hidden overflow-y-auto custom-scrollbar scroll-smooth">
-
-
-
-          {/* 1. TOP HEADER */}
-          <div className="flex justify-between items-center mb-8 h-10 shrink-0">
-            <button onClick={() => setIsExpanded(false)} className="p-2 -ml-2">
-              <FiChevronDown size={32} className="text-white hover:opacity-75 transition" />
-            </button>
-
-            <div className="flex bg-white/10 rounded-full p-1">
-              <button
-                onClick={() => setShowVideo(false)}
-                className={`px-6 py-1.5 rounded-full text-xs font-bold transition ${!showVideo ? 'bg-white/20 text-white' : 'text-zinc-500'}`}
-              >Song</button>
-              <button
-                onClick={() => setShowVideo(true)}
-                className={`px-6 py-1.5 rounded-full text-xs font-bold transition ${showVideo ? 'bg-white/20 text-white' : 'text-zinc-500'}`}
-              >Video</button>
-            </div>
-            <div className="w-10" />
-          </div>
-
-          {/* 2. MAIN DISPLAY (Art or Video) */}
-          <div className="w-full aspect-square mb-8 relative shrink-0">
-            {!showVideo ? (
-              <div className="w-full h-full bg-zinc-900 rounded-xl overflow-hidden shadow-2xl">
-                <img src={currentSong.coverImage} className="w-full h-full object-cover" alt="Art" />
-              </div>
-            ) : (
-              <div className="w-full h-full bg-black rounded-xl overflow-hidden relative pointer-events-none">
-                <YouTube
-                  videoId={getYouTubeId(currentSong.audioUrl)}
-                  opts={{
-                    width: '100%',
-                    height: '100%',
-                    playerVars: {
-                      autoplay: 1,
-                      controls: 0,
-                      modestbranding: 1,
-                      rel: 0,
-                      showinfo: 0,
-                      iv_load_policy: 3,
-                      disablekb: 1,
-                      origin: window.location.origin,
-                    }
-                  }}
-                  onReady={onReady}
-                  onStateChange={onStateChange}
-                  className="w-full h-full"
-                  containerClassName="absolute inset-0 w-full h-full"
-                />
-              </div>
-            )}
-          </div>
-
-          {/* 3. INFO & CONTROLS SECTION */}
-          <div className="flex flex-col shrink-0">
-            <div className="mb-4">
-              <h2 className="text-2xl font-extrabold text-white truncate mb-1">{currentSong.title}</h2>
-              <p className="text-spotify-grey text-base truncate">{currentSong.artist}</p>
-            </div>
-
-            <div className="flex items-center justify-between mb-6 text-white/80">
-              <button className="flex items-center gap-2 hover:text-white bg-white/10 px-4 py-2 rounded-full text-xs font-semibold transition active:scale-95">
-                <MdThumbUpOffAlt size={18} /> Like
+      {/* We keep this always mounted but hidden to prevent the YouTube player from unmounting/reloading */}
+      {/* 🌟 FULL SCREEN MOBILE OVERLAY 🌟 */}
+      {/* This container stays mounted to keep the player alive, but is invisible on desktop or when minimized. */}
+      <div className={`fixed inset-0 z-[100] overflow-y-auto custom-scrollbar scroll-smooth transition-all duration-500 ease-in-out
+        ${isExpanded ? 'bg-black pointer-events-auto' : 'bg-transparent pointer-events-none'}
+      `}>
+          {/* THE ACTUAL OVERLAY CONTENT (Only shows on mobile when expanded) */}
+          <div className={`p-6 pt-12 flex flex-col min-h-full transition-opacity duration-500 md:hidden
+            ${isExpanded ? 'opacity-100' : 'opacity-0'}
+          `}>
+            {/* 1. TOP HEADER */}
+            <div className="flex justify-between items-center mb-8 h-10 shrink-0">
+              <button onClick={() => setIsExpanded(false)} className="p-2 -ml-2">
+                <FiChevronDown size={32} className="text-white hover:opacity-75 transition" />
               </button>
-              <button className="hover:text-white bg-white/10 p-2 rounded-full transition active:scale-95">
-                <MdThumbDownOffAlt size={18} />
-              </button>
-              <button className="flex items-center gap-2 hover:text-white bg-white/10 px-4 py-2 rounded-full text-xs font-semibold transition active:scale-95">
-                <MdPlaylistAdd size={18} /> Save
-              </button>
-              <button className="hover:text-white bg-white/10 p-2 rounded-full transition active:scale-95">
-                <MdShare size={18} />
-              </button>
-            </div>
 
-            <div className="mb-6"><ProgressBar /></div>
-
-            <div className="flex items-center justify-between px-2 mb-10">
-              <FiShuffle size={22} className="text-spotify-grey hover:text-white transition" />
-              <div className="flex items-center gap-6">
-                <FaStepBackward size={28} className="text-white hover:opacity-75 transition" />
+              <div className="flex bg-white/10 rounded-full p-1">
                 <button
-                  onClick={togglePlay}
-                  className="w-16 h-16 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 transition shadow-lg active:scale-95"
-                >
-                  {isPlaying ? <FaPause size={24} /> : <FaPlay size={24} className="pl-1" />}
+                  onClick={() => setShowVideo(false)}
+                  className={`px-6 py-1.5 rounded-full text-xs font-bold transition ${!showVideo ? 'bg-white/20 text-white' : 'text-zinc-500'}`}
+                >Song</button>
+                <button
+                  onClick={() => setShowVideo(true)}
+                  className={`px-6 py-1.5 rounded-full text-xs font-bold transition ${showVideo ? 'bg-white/20 text-white' : 'text-zinc-500'}`}
+                >Video</button>
+              </div>
+              <div className="w-10" />
+            </div>
+
+            {/* 2. MAIN DISPLAY (Art or Video Placeholder) */}
+            <div className="w-full aspect-square mb-8 relative shrink-0">
+              {!showVideo ? (
+                <div className="w-full h-full bg-zinc-900 rounded-xl overflow-hidden shadow-2xl">
+                  <img src={currentSong.coverImage} className="w-full h-full object-cover" alt="Art" />
+                </div>
+              ) : (
+                <div className="w-full h-full bg-black rounded-xl overflow-hidden relative">
+                   {/* The Persistent Player is rendered as a child of the overlay, positioned absolutely here. */}
+                </div>
+              )}
+            </div>
+
+            {/* 3. INFO & CONTROLS SECTION */}
+            <div className="flex flex-col shrink-0">
+              <div className="mb-4">
+                <h2 className="text-2xl font-extrabold text-white truncate mb-1">{currentSong.title}</h2>
+                <p className="text-spotify-grey text-base truncate">{currentSong.artist}</p>
+              </div>
+
+              <div className="flex items-center justify-between mb-6 text-white/80">
+                <button className="flex items-center gap-2 hover:text-white bg-white/10 px-4 py-2 rounded-full text-xs font-semibold transition active:scale-95">
+                  <MdThumbUpOffAlt size={18} /> Like
                 </button>
-                <FaStepForward size={28} className="text-white hover:opacity-75 transition" />
+                <button className="hover:text-white bg-white/10 p-2 rounded-full transition active:scale-95">
+                  <MdThumbDownOffAlt size={18} />
+                </button>
+                <button className="flex items-center gap-2 hover:text-white bg-white/10 px-4 py-2 rounded-full text-xs font-semibold transition active:scale-95">
+                  <MdPlaylistAdd size={18} /> Save
+                </button>
+                <button className="hover:text-white bg-white/10 p-2 rounded-full transition active:scale-95">
+                  <MdShare size={18} />
+                </button>
               </div>
-              <FiRepeat size={22} className="text-spotify-grey hover:text-white transition" />
-            </div>
-          </div>
 
-          {/* 4. THE SPOTIFY LYRICS CARD (Modified for Internal Scrolling & Fullscreen) */}
-          <div className={`w-full bg-[#6d4c41] rounded-2xl p-6 transition-all duration-500 ease-in-out flex flex-col shadow-xl 
-            ${isLyricsFull 
-              ? "fixed inset-0 z-[120] rounded-none pt-20 pb-10" 
-              : "relative mb-12 min-h-[400px] max-h-[450px]"
-            }`}
-          >
-            <div className="flex justify-between items-center mb-6 shrink-0">
-              <span className="text-white font-bold text-xl tracking-tight">Lyrics</span>
+              <div className="mb-6"><ProgressBar /></div>
+
+              <div className="flex items-center justify-between px-2 mb-10">
+                <FiShuffle size={22} className="text-spotify-grey hover:text-white transition" />
+                <div className="flex items-center gap-6">
+                  <FaStepBackward size={28} className="text-white hover:opacity-75 transition" />
+                  <button
+                    onClick={togglePlay}
+                    className="w-16 h-16 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 transition shadow-lg active:scale-95"
+                  >
+                    {isPlaying ? <FaPause size={24} /> : <FaPlay size={24} className="pl-1" />}
+                  </button>
+                  <FaStepForward size={28} className="text-white hover:opacity-75 transition" />
+                </div>
+                <FiRepeat size={22} className="text-spotify-grey hover:text-white transition" />
+              </div>
+            </div>
+
+            {/* 4. THE SPOTIFY LYRICS CARD */}
+            <div className={`w-full bg-[#6d4c41] rounded-2xl p-6 transition-all duration-500 ease-in-out flex flex-col shadow-xl 
+              ${isLyricsFull 
+                ? "fixed inset-0 z-[120] rounded-none pt-20 pb-10" 
+                : "relative mb-12 min-h-[400px] max-h-[450px]"
+              }`}
+            >
+              <div className="flex justify-between items-center mb-6 shrink-0">
+                <span className="text-white font-bold text-xl tracking-tight">Lyrics</span>
+                
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsLyricsFull(!isLyricsFull);
+                  }}
+                  className="bg-black/20 p-2 rounded-full text-white hover:bg-black/40 transition active:scale-90"
+                >
+                  {isLyricsFull ? <FiMinimize2 size={20} /> : <FiMaximize2 size={20} />}
+                </button>
+              </div>
               
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsLyricsFull(!isLyricsFull);
-                }}
-                className="bg-black/20 p-2 rounded-full text-white hover:bg-black/40 transition active:scale-90"
-              >
-                {isLyricsFull ? <FiMinimize2 size={20} /> : <FiMaximize2 size={20} />}
-              </button>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto custom-scrollbar pr-2">
-              <p className={`font-bold text-white leading-tight whitespace-pre-line tracking-tight transition-all duration-300
-                ${isLyricsFull ? "text-3xl opacity-100" : "text-xl opacity-90"}
-              `}>
-                {lyrics || "No lyrics found for this track."}
-              </p>
+              <div className="flex-1 overflow-y-auto custom-scrollbar pr-2">
+                <p className={`font-bold text-white leading-tight whitespace-pre-line tracking-tight transition-all duration-300
+                  ${isLyricsFull ? "text-3xl opacity-100" : "text-xl opacity-90"}
+                `}>
+                  {lyrics || "No lyrics found for this track."}
+                </p>
 
-              <div className="mt-10 pt-4 text-white/30 text-[10px] font-bold uppercase tracking-widest border-t border-white/10">
-                Source: Lyrics.ovh
+                <div className="mt-10 pt-4 text-white/30 text-[10px] font-bold uppercase tracking-widest border-t border-white/10">
+                  Source: Lyrics.ovh
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* 🌟 PERSISTENT MINI VIDEO (Only when not expanded) 🌟 */}
-      {showVideo && !isExpanded && (
-        <div className="fixed bottom-[76px] w-10 h-10 md:bottom-24 md:w-64 md:h-auto md:aspect-video bg-black z-[110] shadow-2xl border border-white/10 overflow-hidden pointer-events-none rounded-md">
-          <YouTube
-            videoId={getYouTubeId(currentSong.audioUrl)}
-            opts={{
-              width: '100%',
-              height: '100%',
-              playerVars: {
-                autoplay: 1,
-                controls: 0,
-                modestbranding: 1,
-                rel: 0,
-                showinfo: 0,
-                iv_load_policy: 3,
-                disablekb: 1,
-                origin: window.location.origin,
+          {/* 🌟 PERSISTENT SINGLE PLAYER 🌟 */}
+          <div 
+            className={`z-[110] bg-black overflow-hidden transition-all duration-500 ease-in-out
+              ${!showVideo ? 'opacity-0 invisible' : 'opacity-100 visible'}
+              ${isExpanded 
+                ? 'absolute top-[120px] left-12 right-12 aspect-square rounded-xl shadow-2xl pointer-events-none' 
+                : 'fixed bottom-[76px] w-10 h-10 md:bottom-24 md:w-64 md:h-auto md:aspect-video border border-white/10 rounded-md shadow-lg pointer-events-none'
               }
-            }}
-            onReady={onReady}
-            onStateChange={onStateChange}
-            className="w-full h-full"
-            containerClassName="absolute inset-0 w-full h-full"
-          />
-        </div>
-      )}
+            `}
+          >
+            <YouTube
+              videoId={getYouTubeId(currentSong.audioUrl)}
+              opts={{
+                width: '100%',
+                height: '100%',
+                playerVars: {
+                  autoplay: 1,
+                  controls: 0,
+                  modestbranding: 1,
+                  rel: 0,
+                  showinfo: 0,
+                  iv_load_policy: 3,
+                  disablekb: 1,
+                  origin: window.location.origin,
+                }
+              }}
+              onReady={onReady}
+              onStateChange={onStateChange}
+              className="w-full h-full"
+              containerClassName="absolute inset-0 w-full h-full"
+            />
+          </div>
+      </div>
 
       {/* 🌟 STANDARD MINI PLAYER 🌟 */}
       <div className="h-full px-2 md:px-4 flex items-center justify-between relative z-50">

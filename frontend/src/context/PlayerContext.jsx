@@ -112,7 +112,8 @@ const sanitizeTitle = (title, artist) => {
       value={{
         currentSong, isPlaying, playSong, togglePlay, ytPlayer,
         volume, changeVolume, showVideo, setShowVideo,
-        isExpanded, setIsExpanded, lyrics // CRITICAL: Added lyrics here
+        isExpanded, setIsExpanded, lyrics,
+        onReady, onStateChange
       }}
     >
       {children}
