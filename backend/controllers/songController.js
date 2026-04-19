@@ -93,6 +93,7 @@ export const autoAddSong = async (req, res) => {
             video = await ytSearch({ videoId });
         } catch (ytError) {
             console.error("YouTube Search Error:", ytError.message);
+            console.error("YouTube Search Error:", ytError);
             return res.status(404).json({ message: 'Video is unavailable, private, or region-locked.' });
         }
 
