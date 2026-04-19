@@ -148,7 +148,7 @@ const MusicPlayer = () => {
 
           {/* 🌟 PERSISTENT SINGLE PLAYER 🌟 */}
           <div 
-            className={`z-[110] bg-black overflow-hidden transition-all duration-500 ease-in-out
+            className={`z-[110] bg-black overflow-hidden
               ${!showVideo ? 'opacity-0 invisible' : 'opacity-100 visible'}
               ${isExpanded 
                 ? 'absolute top-[120px] left-12 right-12 aspect-square rounded-xl shadow-2xl pointer-events-none' 
